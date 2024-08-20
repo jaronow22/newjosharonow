@@ -20,6 +20,7 @@
             align-items: center;
             height: 150px; /* Reduced height for less white space */
             margin: 0; /* Remove any default margin */
+            position: relative;
         }
 
         #overlay-text {
@@ -39,6 +40,22 @@
             background-clip: text;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        #cursor {
+            display: inline-block;
+            background-color: #333;
+            width: 2px;
+            height: 1.2em;
+            animation: blink 0.7s steps(1) infinite;
+            position: absolute;
+            left: 0;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
         }
 
         .nav-menu {
@@ -218,6 +235,7 @@
         <span id="overlay-text">
             Copy Work It.
             <span class="highlight"></span>
+            <span id="cursor"></span>
         </span>
     </div>
 
@@ -278,6 +296,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const textElement = document.querySelector('#overlay-text .highlight');
+            const cursor = document.querySelector('#cursor');
     
             const text = 'Copy Work It.'; // Correct text
             let index = 0;
@@ -286,6 +305,7 @@
             function type() {
                 if (index < text.length) {
                     textElement.textContent = text.substring(0, index + 1);
+                    cursor.style.left = `${textElement.offsetWidth}px`; // Move cursor along with the text
                     index++;
                     setTimeout(type, typingSpeed);
                 } else {
@@ -296,6 +316,7 @@
             function erase() {
                 if (index >= 0) {
                     textElement.textContent = text.substring(0, index);
+                    cursor.style.left = `${textElement.offsetWidth}px`; // Move cursor along with the text
                     index--;
                     setTimeout(erase, typingSpeed);
                 } else {
