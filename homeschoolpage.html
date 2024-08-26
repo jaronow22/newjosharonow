@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Themed Page with Typing Logo</title>
+    <style>
+        :root {
+            --text-top-padding: 15%; /* Adjust this to move the text up/down */
+            --text-horizontal-padding: 5%; /* Adjust this to move the text left/right */
+            --header-right-padding: 10px; /* Further reduced padding to bring the buttons closer */
+            --auth-buttons-margin-left: 710px; /* Adjust this value to control the left margin of the auth buttons */
+            --auth-buttons-spacing: 8px; /* Adjust the spacing between the Log In and Sign Up buttons */
+            --gradient-color: linear-gradient(135deg, #5c12ab, #2575fc); /* Define the gradient color */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-color);
+            clip-path: polygon(0 0, 100% 0, 100% 37%, 0 55%);
+            display: flex;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: flex-start; /* Align content to the top */
+            padding: var(--text-top-padding) var(--text-horizontal-padding); /* Adjust padding to move content */
+        }
+
+        .typing-container {
+            text-align: left; /* Align text to the left */
+            position: relative;
+            max-width: 600px; /* Limit the width of the text */
+        }
+
+        #overlay-text {
+            font-size: 2.5em; /* Adjust font size to your preference */
+            font-weight: bold;
+            color: white; /* Set text color to white for visibility */
+            position: relative;
+        }
+
+        .line-wrapper {
+            position: relative;
+            margin-bottom: 0.2em; /* Reduced spacing between lines */
+            white-space: nowrap; /* Ensure text doesn't wrap */
+        }
+
+        .highlight {
+            color: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: auto;
+        }
+
+        .underlay {
+            background: linear-gradient(135deg, #3975dd, #3975dd); /* Gradient color */
+            -webkit-background-clip: text; /* Ensures the gradient is clipped to the text */
+            background-clip: text;
+            color: transparent; /* Makes the text transparent to reveal the gradient */
+        }
+
+        .cursor {
+            display: inline-block;
+            background-color: #ffffff;
+            width: 3px; /* Adjust the cursor width */
+            height: 1em;
+            animation: blink 0.7s steps(1) infinite;
+            position: absolute;
+        }
+
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            50.1%, 100% {
+                opacity: 0;
+            }
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+            margin-top: -800px; /* Increased margin-top for spacing below the header */
+        }
+
+        .features-list li {
+            font-size: 1.2em; /* Adjust font size to match your design */
+            font-family: Arial, sans-serif;
+            color: white; /* Adjust color to match your design */
+            padding-left: 30px; /* Reduce padding to bring the text closer to the checkmark image */
+            position: relative;
+            margin-bottom: 15px; /* Increased spacing between list items */
+        }
+
+        .features-list li::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 2px; /* Adjust this value to align the smaller checkmark with the text */
+            width: 20px; /* Adjust width of the checkmark image */
+            height: 20px; /* Adjust height of the checkmark image */
+            background-image: url('checkmark-06.png'); /* Ensure this path is correct */
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Style for the header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: transparent; /* Start with a transparent background */
+            display: flex;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: center;
+            padding: 10px 15px;
+            padding-right: var(--header-right-padding); /* Adjust padding to move buttons left */
+            box-shadow: none; /* No shadow initially */
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .header.scrolled {
+            background: var(--gradient-color); /* Gradient background when scrolled */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            height: 50px; /* Size the image appropriately */
+        }
+
+        .header nav {
+            display: flex;
+            gap: 20px; /* Adjust the gap between links and buttons */
+            align-items: center; /* Align items vertically in the center */
+            margin-right: auto; /* Pushes the navigation to the left */
+        }
+
+        .header nav a {
+            font-size: 18px; /* Same font size as the login button */
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Make the font bold */
+            color: white; /* Set the font color */
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 2px solid transparent; /* Start with a transparent border */
+            transition: border 0.3s ease; /* Smooth transition for border appearance */
+        }
+
+        .header nav a:hover {
+            border: 2px solid white; /* Add a white border on hover */
+            text-decoration: none; /* Ensure there's no underline on hover */
+        }
+
+        .header .auth-buttons {
+            display: flex;
+            gap: var(--auth-buttons-spacing); /* Use variable for spacing between buttons */
+            margin-left: var(--auth-buttons-margin-left); /* Use variable for left margin */
+        }
+
+        .header .btn-login {
+            font-size: 18px;
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 2px solid transparent; /* Start with a transparent border */
+            color: white;
+            transition: border 0.3s ease; /* Smooth transition for border appearance */
+        }
+
+        .header .btn-login:hover {
+            border: 2px solid white; /* Add a white border on hover */
+        }
+
+        .header .btn-signup {
+            font-size: 18px;
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: white; /* White background for the button */
+            color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease; /* Smooth transition for all properties */
+        }
+
+        .header .btn-signup::before {
+            content: "Sign Up";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-color); /* Gradient color for text */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .header .btn-signup:hover {
+            background-color: #dcdcdc; /* Change button background to gray on hover */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .modal button {
+            background: var(--gradient-color); /* Gradient color for the button */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px; /* Add margin between buttons */
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .modal button:hover {
+            background-color: #ff9800;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            .header nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header nav a {
+                font-size: 16px;
+            }
+
+            .header .auth-buttons {
+                flex-direction: column;
+                gap: 5px;
+                margin-left: 0;
+            }
+
+            .header .btn-signup, .header .btn-login {
+                padding: 6px 12px;
+                font-size: 16px;
+            }
+
+            .header img {
+                height: 40px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            .modal button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+
+        /* Header positioning in white section */
+        .bottom-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 0px; /* Adjust to control the position */
+            margin-top: -542px; /* Move the header higher up */
+        }
+
+        .bottom-section h1 {
+            font-size: 3vw; /* Use viewport width to make it responsive and large */
+            margin: 0; /* Remove any default margins */
+            background: var(--gradient-color); /* Apply the gradient color */
+            -webkit-background-clip: text; /* Clip the gradient to the text */
+            color: transparent; /* Make the text itself transparent to show the gradient */
+            line-height: 1.2; /* Adjust line-height if needed */
+        }
+
+        .features-container {
+            display: flex;
+            justify-content: space-around; /* Distribute the images evenly */
+            align-items: center;
+            margin-top: 45px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .feature {
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .feature img {
+            max-width: 100px;
+            margin-bottom: 5px; /* Reduce margin between image and text */
+        }
+
+        .feature p {
+            font-size: 0.85em; /* Make the font smaller */
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Your gradient colors */
+            -webkit-background-clip: text; /* Clip the background to the text */
+            -webkit-text-fill-color: transparent; /* Make the text transparent so the gradient shows */
+            margin-top: 5px; /* Reduce spacing between image and text */
+        }
+
+        .demo-button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 70px; /* Add margin above the button */
+        }
+
+        .demo-button {
+            background: var(--gradient-color); /* Gradient color for the button */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 1.2em;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background-color: #ff9800; /* Change color on hover */
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with logo and navigation -->
+    <header class="header" id="header">
+        <div style="display: flex; align-items: center;">
+            <a href="home.html">
+                <img src="box-copy.png" alt="Copy Work It." style="height: 50px; margin-right: 20px;">
+            </a>
+            <nav>
+                <a href="homeschoolpage.html">Homeschool</a>
+                <a href="writerspage.html">Writers</a>
+            </nav>
+        </div>
+        <div class="auth-buttons">
+            <a href="#" class="btn-login" id="loginBtn">Log In</a>
+            <a href="#" class="btn-signup" id="signupBtn">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="typing-container">
+            <div id="overlay-text">
+                <div class="line-wrapper">
+                    <span class="underlay">Make Copywork an</span>
+                    <span class="highlight" id="line1"></span>
+                </div>
+                <div class="line-wrapper">
+                    <span class="underlay">Essential Part of your</span>
+                    <span class="highlight" id="line2"></span>
+                </div>
+                <div class="line-wrapper">
+                    <span class="underlay">Homeschool Curriculum</span>
+                    <span class="highlight" id="line3"></span>
+                </div>
+                <span id="cursor" class="cursor"></span>
+            </div>
+            <ul class="features-list">
+                <li>Personalized Copywork Experience</li>
+                <li>Enhances Writing and Vocabulary</li>
+                <li>Flexible Learning Formats</li>
+                <li>Practice Anytime, Anywhere</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Bottom section with header positioning -->
+    <div class="bottom-section">
+        <h1>The Easiest Way to Teach Writing Mastery</h1>
+        <div class="features-container">
+            <div class="feature">
+                <img src="keyboard.png" alt="Keyboard">
+                <p>Digital Copywork</p>
+            </div>
+            <div class="feature">
+                <img src="pencil.png" alt="Pencil">
+                <p>Handwritten Copywork</p>
+            </div>
+            <div class="feature">
+                <img src="clipboard.png" alt="Clipboard">
+                <p>Customizable Lessons</p>
+            </div>
+        </div>
+
+        <!-- Button Container -->
+        <div class="demo-button-container">
+            <a href="opensesame.html">
+                <button class="demo-button">Test Demo Now!</button>
+            </a>
+        </div>
+    </div>
+
+    <!-- Demo Mode Modal -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeDemoModal">&times;</span>
+            <div class="modal-header">Demo Mode</div>
+            <p>This product is currently in demo mode.</p>
+            <p>Click on the portal you would like to view.</p>
+            <button id="studentsWritersBtn">Students & Writers Portal</button>
+            <button id="instructorsBtn">Instructors Portal</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lines = [
+                { element: document.getElementById('line1'), text: 'Make Copywork an' },
+                { element: document.getElementById('line2'), text: 'Essential Part of your' },
+                { element: document.getElementById('line3'), text: 'Homeschool Curriculum' }
+            ];
+
+            const cursor = document.getElementById('cursor');
+            let lineIndex = 0;
+            let charIndex = 0;
+            const typingSpeed = 150;
+
+            function type() {
+                if (lineIndex < lines.length) {
+                    const currentLine = lines[lineIndex];
+
+                    if (charIndex < currentLine.text.length) {
+                        currentLine.element.textContent += currentLine.text[charIndex];
+                        cursor.style.left = `${currentLine.element.offsetWidth}px`;
+                        cursor.style.top = `${currentLine.element.parentElement.offsetTop}px`;
+                        charIndex++;
+                        setTimeout(type, typingSpeed);
+                    } else {
+                        charIndex = 0;
+                        lineIndex++;
+                        if (lineIndex < lines.length) {
+                            cursor.style.left = `0px`; // Move cursor to the start of the next line
+                            cursor.style.top = `${lines[lineIndex].element.parentElement.offsetTop}px`;
+                        }
+                        setTimeout(type, typingSpeed); // Start typing on the next line
+                    }
+                } else {
+                    const lastLine = lines[lines.length - 1];
+                    cursor.style.left = `${lastLine.element.offsetWidth}px`;
+                    cursor.style.top = `${lastLine.element.parentElement.offsetTop}px`;
+                }
+            }
+
+            type();
+
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+
+            // Demo Mode Modal functionality
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const demoModal = document.getElementById('demoModal');
+            const closeDemoModal = document.getElementById('closeDemoModal');
+            const studentsWritersBtn = document.getElementById('studentsWritersBtn');
+            const instructorsBtn = document.getElementById('instructorsBtn');
+
+            function showDemoModal() {
+                demoModal.style.display = 'flex';
+            }
+
+            loginBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                showDemoModal();
+            });
+
+            signupBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                showDemoModal();
+            });
+
+            closeDemoModal.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+            });
+
+            studentsWritersBtn.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+                // Here you can add navigation to the students and writers portal
+            });
+
+            instructorsBtn.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+                // Here you can add navigation to the instructors portal
+            });
+
+            // Close modals if clicked outside content
+            window.addEventListener('click', function(event) {
+                if (event.target === demoModal) {
+                    demoModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
