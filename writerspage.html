@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Themed Page with Typing Logo</title>
+    <style>
+        :root {
+            --text-top-padding: 15%; /* Adjust this to move the text up/down */
+            --text-horizontal-padding: 5%; /* Adjust this to move the text left/right */
+            --header-right-padding: 10px; /* Further reduced padding to bring the buttons closer */
+            --auth-buttons-margin-left: 710px; /* Adjust this value to control the left margin of the auth buttons */
+            --auth-buttons-spacing: 8px; /* Adjust the spacing between the Log In and Sign Up buttons */
+            --gradient-color: linear-gradient(135deg, #5c12ab, #2575fc); /* Define the gradient color */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-color);
+            clip-path: polygon(0 0, 100% 0, 100% 37%, 0 55%);
+            display: flex;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: flex-start; /* Align content to the top */
+            padding: var(--text-top-padding) var(--text-horizontal-padding); /* Adjust padding to move content */
+        }
+
+        .typing-container {
+            text-align: left; /* Align text to the left */
+            position: relative;
+            max-width: 600px; /* Limit the width of the text */
+        }
+
+        #overlay-text {
+            font-size: 2.5em; /* Adjust font size to your preference */
+            font-weight: bold;
+            color: white; /* Set text color to white for visibility */
+            position: relative;
+        }
+
+        .line-wrapper {
+            position: relative;
+            margin-bottom: 0.2em; /* Reduced spacing between lines */
+            white-space: nowrap; /* Ensure text doesn't wrap */
+        }
+
+        .highlight {
+            color: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: auto;
+        }
+
+        .underlay {
+            background: linear-gradient(135deg, #3975dd, #3975dd); /* Gradient color */
+            -webkit-background-clip: text; /* Ensures the gradient is clipped to the text */
+            background-clip: text;
+            color: transparent; /* Makes the text transparent to reveal the gradient */
+        }
+
+        .cursor {
+            display: inline-block;
+            background-color: #ffffff;
+            width: 3px; /* Adjust the cursor width */
+            height: 1em;
+            animation: blink 0.7s steps(1) infinite;
+            position: absolute;
+        }
+
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            50.1%, 100% {
+                opacity: 0;
+            }
+        }
+
+        .features-list {
+            list-style: none; /* Remove default bullets */
+            padding: 0;
+            margin-top: 30px; /* Increased margin-top for spacing below the header */
+        }
+
+        .features-list li {
+            font-size: 1.2em; /* Adjust font size to match your design */
+            font-family: Arial, sans-serif;
+            color: white; /* Adjust color to match your design */
+            padding-left: 0; /* Remove padding since there are no checkmarks */
+            position: relative;
+            margin-bottom: 15px; /* Increased spacing between list items */
+        }
+
+        /* Style for the header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: transparent; /* Start with a transparent background */
+            display: flex;
+            justify-content: flex-start; /* Align content to the left */
+            align-items: center;
+            padding: 10px 15px;
+            padding-right: var(--header-right-padding); /* Adjust padding to move buttons left */
+            box-shadow: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .header.scrolled {
+            background: var(--gradient-color); /* Gradient background when scrolled */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header img {
+            height: 50px; /* Size the image appropriately */
+        }
+
+        .header nav {
+            display: flex;
+            gap: 20px; /* Adjust the gap between links and buttons */
+            align-items: center; /* Align items vertically in the center */
+            margin-right: auto; /* Pushes the navigation to the left */
+        }
+
+        .header nav a {
+            font-size: 18px; /* Same font size as the login button */
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Make the font bold */
+            color: white; /* Set the font color */
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 2px solid transparent; /* Start with a transparent border */
+            transition: border 0.3s ease; /* Smooth transition for border appearance */
+        }
+
+        .header nav a:hover {
+            border: 2px solid white; /* Add a white border on hover */
+            text-decoration: none; /* Ensure there's no underline on hover */
+        }
+
+        .header .auth-buttons {
+            display: flex;
+            gap: var(--auth-buttons-spacing); /* Use variable for spacing between buttons */
+            margin-left: var(--auth-buttons-margin-left); /* Use variable for left margin */
+        }
+
+        .header .btn-login {
+            font-size: 18px;
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: 2px solid transparent; /* Start with a transparent border */
+            color: white;
+            transition: border 0.3s ease; /* Smooth transition for border appearance */
+        }
+
+        .header .btn-login:hover {
+            border: 2px solid white; /* Add a white border on hover */
+        }
+
+        .header .btn-signup {
+            font-size: 18px;
+            font-family: Arial, sans-serif; /* Set font to Arial */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 4px;
+            background-color: white; /* White background for the button */
+            color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease; /* Smooth transition for all properties */
+        }
+
+        .header .btn-signup::before {
+            content: "Sign Up";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-color); /* Gradient color for text */
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .header .btn-signup:hover {
+            background-color: #dcdcdc; /* Change button background to gray on hover */
+        }
+
+        /* Text section below header */
+        .text-section {
+            max-width: 1000px;
+            margin: -450px auto 0 auto; /* Negative margin-top to move the text upward */
+            padding: 0 20px 30px 20px; /* Add padding inside the box */
+            font-family: Arial, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            border: 2px solid; /* Set a thin border */
+            border-image: var(--gradient-color) 1; /* Use the gradient color for the border */
+            border-radius: 10px; /* Add rounded corners */
+            background-color: #fff; /* Optional: Ensure the background inside the border is white */
+        }
+
+        .text-section h3.highlighted-text {
+            margin-top: 30px;
+            font-size: 1.8em;
+            background: var(--gradient-color); /* Apply the gradient color */
+            -webkit-background-clip: text;
+            color: transparent; /* Make the text itself transparent to show the gradient */
+            text-align: center;
+        }
+
+        .text-section p {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .text-section em {
+            font-style: italic;
+        }
+
+        /* Emphasized text styling */
+        .text-section em {
+            font-style: italic;
+            color: #5c12ab; /* Emphasize with a color from the gradient */
+            font-weight: bold; /* Bold for emphasis */
+        }
+
+        .text-section ef {
+            font-style: bold;
+            color: #5c12ab; /* Emphasize with a color from the gradient */
+            font-weight: bold; /* Bold for emphasis */
+        }
+
+        .text-section ej {
+            font-style: normal; /* Keep the italic style */
+            text-decoration: underline; /* Add underline to the text */
+            color: #333333; /* Optional: Keep the color to maintain emphasis */
+            font-weight: normal; /* Remove the bold effect */
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4); /* Black background with opacity */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 50%;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .modal-header {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .modal p {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .modal button {
+            background: var(--gradient-color); /* Gradient color for the button */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 2px; /* Add margin between buttons */
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+        }
+
+        .modal button:hover {
+            background-color: #ff9800;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        @media screen and (max-width: 768px) {
+            .header nav {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header nav a {
+                font-size: 16px;
+            }
+
+            .header .auth-buttons {
+                flex-direction: column;
+                gap: 5px;
+                margin-left: 0;
+            }
+
+            .header .btn-signup, .header .btn-login {
+                padding: 6px 12px;
+                font-size: 16px;
+            }
+
+            .header img {
+                height: 40px;
+            }
+
+            .modal-content {
+                width: 90%;
+            }
+
+            .modal button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+
+        /* demo button */
+        .demo-button-container {
+            text-align: center; /* Center the button */
+            margin-top: 20px; /* Add some space between the border and the button */
+            padding-bottom: 40px; /* Add space after the button */
+        }
+
+        .demo-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            background: var(--gradient-color); /* Use the gradient color */
+            text-align: center;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for effect */
+        }
+
+        /* Header positioning in white section */
+        .bottom-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding-top: 0px; /* Set padding-top to zero to bring it as close to the top as possible */
+            margin-top: -1767px; /* Increase the negative margin to move the section higher */
+        }
+
+        .bottom-section h1 {
+            font-size: 3vw; /* Use viewport width to make it responsive and large */
+            margin: 0; /* Remove any default margins */
+            background: var(--gradient-color); /* Apply the gradient color */
+            -webkit-background-clip: text; /* Clip the gradient to the text */
+            color: transparent; /* Make the text itself transparent to show the gradient */
+            line-height: 1.2; /* Adjust line-height if needed */
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Header with logo and navigation -->
+    <header class="header" id="header">
+        <div style="display: flex; align-items: center;">
+            <a href="index.html">
+                <img src="box-copy.png" alt="Copy Work It." style="height: 50px; margin-right: 20px;">
+            </a>
+            <nav>
+                <a href="homeschoolpage.html">Homeschool</a>
+                <a href="writerspage.html">Writers</a>
+            </nav>
+        </div>
+        <div class="auth-buttons">
+            <a href="#" class="btn-login" id="loginBtn">Log In</a>
+            <a href="#" class="btn-signup" id="signupBtn">Sign Up</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="typing-container">
+            <div id="overlay-text">
+                <div class="line-wrapper">
+                    <span class="underlay">Write Like the Greats,</span>
+                    <span class="highlight" id="line1"></span>
+                </div>
+                <div class="line-wrapper">
+                    <span class="underlay">and Become Great.</span>
+                    <span class="highlight" id="line2"></span>
+                </div>
+                <div class="line-wrapper">
+                    <span class="underlay">It’s That Simple.</span>
+                    <span class="highlight" id="line3"></span>
+                </div>
+                <span id="cursor" class="cursor"></span>
+            </div>
+            <ul class="features-list">
+            </ul>
+        </div>
+    </div>
+
+    <!-- Text section below header -->
+    <div class="text-section">
+        <p><ef>Here’s the thing:</ef> up until the mid-1900s, kids learned to write by doing exactly this—copying the words of masters before them.</p>
+        <p>It’s called <ej>copywork</ej>, and it’s how generations of writers honed their craft, developing a deep understanding of grammar, punctuation, rhythm, and voice.</p>
+        <p>Imagine picking up the pen of Ben Franklin, who used copywork to sharpen his persuasive letters, or stepping into the shoes of Hunter S. Thompson, who typed out <em>The Great Gatsby</em> to find his unique voice.</p>
+        <p>Now, let’s talk about Ryan Coogler (you know, the guy who brought Wakanda to life in <em>Black Panther</em> and had us all cheering in <em>Creed</em>). Yeah, that guy. Before he was making billion-dollar movies, he was poring over his favorite films like a treasure hunter looking for gold. He didn’t just watch them—he dissected them, frame by frame, dialogue by dialogue, until he struck storytelling gold.</p>
+        <p>And then there’s Aaron Sorkin (ever heard of <em>The West Wing</em> or <em>The Social Network</em>? That’s him!). Sorkin wasn’t born with a silver pen in his hand. He spent years retyping classic scripts, learning how to craft those rapid-fire exchanges and heart-stopping moments that make his work so iconic. He turned the written word into a symphony, and now, we can’t get his lines out of our heads.</p>
+        <p>So why did copywork ever fall out of fashion?</p>
+        <p>Maybe because it requires focus, or maybe because we got too distracted by shiny new things. But here’s the secret: what worked for the greatest minds in history can work for you too.</p>
+        <p>And with Copy Work It, you can do it all without lifting a quill.</p>
+        <h3 class="highlighted-text">A Proven Path to Writing Mastery</h3>
+        <p>The doubters might tell you that copying others won’t make you original. But the truth is, by internalizing the cadence, style, and flow of the greats, you’re building the muscle memory that lets you create something new—something uniquely yours.</p>
+        <p>In a world where ChatGPT churns out text at the click of a button, everyone’s writing risks blending into the same lifeless tone. With Copy Work It, you’re not just learning to write—you’re learning to stand out.</p>
+        <p>It’s like learning the scales before composing your symphony or studying the brushstrokes of the masters before painting your masterpiece.</p>
+        <p>And the best part? You don’t need hours of your day.</p>
+        <p>Just 15-20 minutes of focused practice each day can unlock a world of writing potential.</p>
+        <p>Want to write with the precision of Hemingway? The suspense of Stephen King? The punch of Apatow? With Copy Work It, you can.</p>
+        <h3 class="highlighted-text">Your Writing Fate Is in Your Hands</h3>
+        <p>You’ve got dreams of inspiring millions, of crafting words that move people, that stick in their minds and hearts.</p>
+        <p>The heroes of the past did it, and now it’s your turn. All it takes is a bit of your time, a willingness to learn, and a platform that makes it easy.</p>
+        <p>So why wait?</p>
+        <p>Dive in, start copying, and watch as your words transform into something extraordinary. The legends of tomorrow start with the practice of today.</p>
+        <p>Welcome to Copy Work It—where even the best writers become better.</p>
+        <p><ef>Try it now. Your future self will thank you.</ef></p>
+    </div>
+
+    <div class="demo-button-container">
+        <a href="opensesame.html" class="demo-button">Test Demo Now!</a>
+    </div>    
+
+    <!-- Bottom section with header positioning -->
+    <div class="bottom-section">
+        <h1>We get it—sounds almost too easy, right?</h1>
+    </div>
+
+    <!-- Demo Mode Modal -->
+    <div id="demoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeDemoModal">&times;</span>
+            <div class="modal-header">Demo Mode</div>
+            <p>This product is currently in demo mode.</p>
+            <p>Click on the portal you would like to view.</p>
+            <button id="studentsWritersBtn">Student Portal</button>
+            <button id="instructorsBtn">Instructor Portal</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lines = [
+                { element: document.getElementById('line1'), text: 'Write Like the Greats,' },
+                { element: document.getElementById('line2'), text: 'and Become Great.' },
+                { element: document.getElementById('line3'), text: 'It’s That Simple.' }
+            ];
+    
+            const cursor = document.getElementById('cursor');
+            let lineIndex = 0;
+            let charIndex = 0;
+            const typingSpeed = 150;
+    
+            function type() {
+                if (lineIndex < lines.length) {
+                    const currentLine = lines[lineIndex];
+    
+                    if (charIndex < currentLine.text.length) {
+                        currentLine.element.textContent += currentLine.text[charIndex];
+                        cursor.style.left = `${currentLine.element.offsetWidth}px`;
+                        cursor.style.top = `${currentLine.element.parentElement.offsetTop}px`;
+                        charIndex++;
+                        setTimeout(type, typingSpeed);
+                    } else {
+                        charIndex = 0;
+                        lineIndex++;
+                        if (lineIndex < lines.length) {
+                            cursor.style.left = `0px`;
+                            cursor.style.top = `${lines[lineIndex].element.parentElement.offsetTop}px`;
+                        }
+                        setTimeout(type, typingSpeed);
+                    }
+                } else {
+                    const lastLine = lines[lines.length - 1];
+                    cursor.style.left = `${lastLine.element.offsetWidth}px`;
+                    cursor.style.top = `${lastLine.element.parentElement.offsetTop}px`;
+                }
+            }
+    
+            type();
+    
+            window.addEventListener('scroll', function() {
+                const header = document.getElementById('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+    
+            const loginBtn = document.getElementById('loginBtn');
+            const signupBtn = document.getElementById('signupBtn');
+            const demoModal = document.getElementById('demoModal');
+            const closeDemoModal = document.getElementById('closeDemoModal');
+            const studentsWritersBtn = document.getElementById('studentsWritersBtn');
+            const instructorsBtn = document.getElementById('instructorsBtn');
+    
+            function showDemoModal() {
+                demoModal.style.display = 'flex';
+            }
+    
+            loginBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                showDemoModal();
+            });
+    
+            signupBtn.addEventListener('click', function(event) {
+                event.preventDefault();
+                showDemoModal();
+            });
+    
+            closeDemoModal.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+            });
+    
+            studentsWritersBtn.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+                // Here you can add navigation to the students and writers portal
+            });
+    
+            instructorsBtn.addEventListener('click', function() {
+                demoModal.style.display = 'none';
+                window.location.href = 'teacherportal.html'; // Redirect to the instructor portal page
+            });
+    
+            window.addEventListener('click', function(event) {
+                if (event.target === demoModal) {
+                    demoModal.style.display = 'none';
+                }
+            });
+        });
+    </script>    
+</body>
+</html>
