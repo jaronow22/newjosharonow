@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Typed Copywork Lesson</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            border: 1px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient border */
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header img {
+            width: 80px;
+            height: auto;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        label.required::after {
+            content: '*';
+            color: red;
+            margin-left: 5px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: calc(100% - 40px);
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(135deg, #6a11cb, #2575fc); /* Gradient border */
+            border-radius: 8px;
+            font-size: 1em;
+            background-color: #ffffff;
+            color: #333333;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            resize: none;
+            outline: none;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .large-textarea {
+            height: 200px;
+        }
+
+        .three-quarters-width {
+            width: 75%;
+        }
+
+        .half-width {
+            width: 50%;
+        }
+
+        ::placeholder {
+            font-family: Arial, sans-serif;
+            font-size: 1em;
+            color: #999;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-button {
+            background-color: #ccc;
+            color: black;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .save-button:hover, .back-button:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px; /* Increased the width */
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .modal-line {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .cancel-button {
+            background-color: #ccc;
+            color: black;
+        }
+
+        .confirm-button {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <img src="keyboard.png" alt="Keyboard Icon">
+            <h1>Create a Typed Copywork Lesson</h1>
+        </div>
+
+        <form id="lessonForm">
+            <label for="lesson-title" class="required">Lesson Title</label>
+            <input type="text" id="lesson-title" name="lesson-title" class="three-quarters-width" placeholder="Enter lesson title">
+
+            <label for="instructions">Instructions</label>
+            <textarea id="instructions" name="instructions" placeholder="Enter instructions"></textarea>
+
+            <label for="copywork-content" class="required">Copywork Content</label>
+            <textarea id="copywork-content" name="copywork-content" class="large-textarea" placeholder="Enter copywork content"></textarea>
+
+            <label for="save-as">Save As</label>
+            <select id="save-as" name="save-as" class="three-quarters-width">
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+            </select>
+
+            <label for="category">Category</label>
+            <input type="text" id="category" name="category" class="half-width" placeholder="Enter category">
+
+            <div class="form-actions">
+                <button type="button" class="back-button" id="back-button">Back</button>
+                <button type="submit" class="save-button">Save Lesson</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h2>You have unsaved changes.</h2>
+            <p>Are you sure you want to leave without saving?</p>
+            <div class="modal-line"></div>
+            <div class="modal-buttons">
+                <button class="modal-button cancel-button" id="cancel-button">Cancel</button>
+                <button class="modal-button confirm-button" id="confirm-button">Yes</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's an existing lesson to edit
+            const editLesson = JSON.parse(localStorage.getItem('editLesson'));
+            if (editLesson) {
+                // Populate the form fields with the existing lesson data
+                document.getElementById('lesson-title').value = editLesson.title;
+                document.getElementById('instructions').value = editLesson.instructions;
+                document.getElementById('copywork-content').value = editLesson.copyworkContent;
+                document.getElementById('save-as').value = editLesson.saveAs;
+                document.getElementById('category').value = editLesson.category;
+    
+                // Clear the edit lesson from localStorage after loading
+                localStorage.removeItem('editLesson');
+            }
+    
+            // Handle the Save Lesson button click
+            document.querySelector('.save-button').addEventListener('click', function(e) {
+                e.preventDefault();
+    
+                // Get the form data
+                const lesson = {
+                    id: editLesson ? editLesson.id : Date.now(),
+                    title: document.getElementById('lesson-title').value,
+                    instructions: document.getElementById('instructions').value,
+                    copyworkContent: document.getElementById('copywork-content').value,
+                    saveAs: document.getElementById('save-as').value,
+                    category: document.getElementById('category').value
+                };
+    
+                // Validate required fields
+                if (!lesson.title || !lesson.copyworkContent) {
+                    alert('Please fill out the required fields.');
+                    return;
+                }
+    
+                // Save or update the lesson in localStorage
+                let lessons = JSON.parse(localStorage.getItem('lessons')) || [];
+                if (editLesson) {
+                    // Update existing lesson
+                    lessons = lessons.map(l => l.id === lesson.id ? lesson : l);
+                } else {
+                    // Add new lesson
+                    lessons.push(lesson);
+                }
+                localStorage.setItem('lessons', JSON.stringify(lessons));
+    
+                // Redirect to customcontent.html
+                window.location.href = 'customcontent.html';
+            });
+    
+            // Handle the Back button click
+            document.getElementById('back-button').addEventListener('click', function() {
+                if (editLesson) {
+                    window.location.href = 'customcontent.html';
+                } else {
+                    // Show confirmation modal or any other action
+                    confirmationModal.style.display = 'flex';
+                }
+            });
+        });
+    </script>    
+</body>
+</html>
