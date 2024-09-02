@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interface</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        h2 {
+            font-size: 2em; /* Adjust this size as needed */
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px; /* Reduced padding to move sections up */
+            box-sizing: border-box;
+            position: relative; /* Ensure positioning context for absolute elements if needed */
+        }
+
+        .logo {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align logo to the top */
+            margin-top: 10px; /* Reduce margin to move logo up */
+        }
+
+        .sidebar-logo {
+            max-width: 220px; /* Ensure the logo fits within the sidebar width */
+        }
+
+        /* Thin faint white line underneath the logo */
+        .logo-divider {
+            width: 90%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3); /* Faint white line */
+            margin: 15px 0; /* Base margin */
+            transform: translateY(5px); /* Move the line down by 5px */
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            padding: 10px 0; /* Add padding to the top and bottom */
+            box-sizing: border-box;
+        }
+
+        .nav-link {
+            width: 100%;
+            padding: 20px 15px; /* Increased padding for larger sections */
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the start (left) */
+        }
+
+        .nav-link img {
+            margin-right: 15px;
+            height: 25px; /* Set a fixed height */
+            width: auto; /* Maintain the aspect ratio */
+        }
+
+        .nav-link:hover,
+        .nav-link.active { /* Add .active class for the currently active page */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #ffffff; /* Ensure the background is pure white */
+            display: flex;
+            flex-direction: column;
+            box-shadow: none; /* Remove any box shadow */
+            border: none; /* Ensure there are no borders */
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: none; /* Remove any box shadow */
+        }
+
+        .search-bar {
+            width: 400px; /* Longer search bar */
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid transparent; /* Removed solid color, added gradient */
+            border-radius: 4px;
+            background-image: linear-gradient(white, white), linear-gradient(135deg, #5c12ab, #2575fc); /* White inside, gradient border */
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            margin-right: 20px;
+            margin-top: 10px; /* Move the search bar down slightly */
+        }
+
+        .add-button-container {
+            position: relative;
+        }
+
+        .add-button {
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white; /* White "+" symbol */
+            border: none;
+            border-radius: 50%; /* Make the button circular */
+            padding: 10px;
+            cursor: pointer;
+            width: 40px; /* Fixed width and height for the circle */
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px; /* Align with search bar */
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Position directly below the button */
+            right: 0;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 1000;
+            width: 200px; /* Set width for the dropdown */
+            color: white; /* White text color */
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: white; /* White text color */
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-menu a img {
+            margin-right: 10px;
+            height: 20px;
+            width: auto;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter hover effect */
+        }
+
+        .add-button-container:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block; /* Keep dropdown visible when hovering over it */
+        }
+
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #ffffff; /* Ensure the background is pure white */
+            overflow-y: auto;
+        }
+
+        /* Calendar Styling */
+        .calendar-container {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr); /* 7 days + 1 for time slots */
+            grid-template-rows: 50px repeat(24, 50px); /* Half height for day headers, double height for hour slots */
+            grid-gap: 1px;
+            background-color: #ddd;
+        }
+
+        .calendar-time, .calendar-day, .calendar-day-header {
+            background-color: white;
+            padding: 5px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-day-header {
+            font-weight: bold;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background for headers */
+            color: white;
+        }
+
+        .calendar-time {
+            text-align: right;
+            padding-right: 10px;
+            font-weight: bold;
+        }
+
+        .calendar-day {
+            background-color: white;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .calendar-prev, .calendar-next, .today-button {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .current-week {
+            font-size: 1.2em;
+            text-decoration: underline;
+            cursor: pointer;
+            color: #5c12ab; /* Gradient color */
+        }
+
+        .calendar-popup {
+            display: none;
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid #ddd;
+            padding: 10px;
+            z-index: 1000;
+        }
+
+        .calendar-popup table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .calendar-popup th, .calendar-popup td {
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .calendar-popup th {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+        }
+
+        .close-calendar {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <img src="box-copy.png" alt="Copy Work It." class="sidebar-logo">
+        </div>
+        <div class="logo-divider"></div> <!-- Thin faint white line below the logo -->
+        <nav class="sidebar-nav">
+            <a href="teacherportal.html" class="nav-link active"><img src="dashboard.png" alt="Dashboard Icon">Dashboard</a>
+            <a href="students.html" class="nav-link"><img src="students.png" alt="Students Icon">Students</a>
+            <a href="customcontent.html" class="nav-link"><img src="custom-lessons.png" alt="Custom Content Icon">Custom Content</a>
+            <a href="curriculum.html" class="nav-link"><img src="curriculum.png" alt="Curriculum Icon">Curriculum</a>
+        </nav>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Top Header -->
+        <header class="main-header">
+            <input type="text" class="search-bar" placeholder="Search">
+            <div class="add-button-container">
+                <button class="add-button">+</button> <!-- Add button as a circular symbol -->
+                <div class="dropdown-menu">
+                    <a href="#"><img src="students.png" alt="Add Class Icon">Add a Student</a>
+                    <a href="#"><img src="custom-lessons.png" alt="Create Custom Lesson Icon">Create Custom Lesson</a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Calendar Section -->
+        <div class="content">
+            <div class="calendar-header">
+                <button class="calendar-prev"><</button>
+                <div class="current-week" id="current-date">September 1 - 7, 2024</div>
+                <button class="calendar-next">></button>
+                <button class="today-button">Today</button>
+            </div>
+
+            <div class="calendar-container">
+                <!-- Day Headers -->
+                <div class="calendar-time"></div> <!-- Empty top-left corner -->
+                <div class="calendar-day-header">Sun 9/1</div>
+                <div class="calendar-day-header">Mon 9/2</div>
+                <div class="calendar-day-header">Tue 9/3</div>
+                <div class="calendar-day-header">Wed 9/4</div>
+                <div class="calendar-day-header">Thu 9/5</div>
+                <div class="calendar-day-header">Fri 9/6</div>
+                <div class="calendar-day-header">Sat 9/7</div>
+
+                <!-- Time and Day Cells -->
+                <div class="calendar-time">12am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">1am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">2am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">3am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">4am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">5am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">6am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">7am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">8am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">9am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">10am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">11am</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">12pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">1pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">2pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">3pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">4pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">5pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">6pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">7pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">8pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">9pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">10pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+
+                <div class="calendar-time">11pm</div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+                <div class="calendar-day"></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Calendar Popup -->
+        <div class="calendar-popup" id="calendar-popup">
+            <span class="close-calendar" id="close-calendar">X</span>
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="7">September 2024</th>
+                    </tr>
+                    <tr>
+                        <th>Su</th>
+                        <th>Mo</th>
+                        <th>Tu</th>
+                        <th>We</th>
+                        <th>Th</th>
+                        <th>Fr</th>
+                        <th>Sa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dynamic content goes here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const prevButton = document.querySelector('.calendar-prev');
+            const nextButton = document.querySelector('.calendar-next');
+            const todayButton = document.querySelector('.today-button');
+            const currentDateDisplay = document.getElementById('current-date');
+            const calendarPopup = document.getElementById('calendar-popup');
+            const closeCalendarButton = document.getElementById('close-calendar');
+
+            let currentDate = new Date();
+
+            function updateCalendar() {
+                const weekStart = new Date(currentDate);
+                weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+                const weekEnd = new Date(weekStart);
+                weekEnd.setDate(weekEnd.getDate() + 6);
+
+                const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+                currentDateDisplay.textContent = `${monthNames[weekStart.getMonth()]} ${weekStart.getDate()} - ${weekEnd.getDate()}, ${weekStart.getFullYear()}`;
+
+                // Update the headers in the calendar
+                const headers = document.querySelectorAll('.calendar-day-header');
+                headers.forEach((header, index) => {
+                    const day = new Date(weekStart);
+                    day.setDate(day.getDate() + index);
+                    header.textContent = `${day.toLocaleString('default', { weekday: 'short' })} ${day.getMonth() + 1}/${day.getDate()}`;
+                });
+            }
+
+            prevButton.addEventListener('click', function() {
+                currentDate.setDate(currentDate.getDate() - 7);
+                updateCalendar();
+            });
+
+            nextButton.addEventListener('click', function() {
+                currentDate.setDate(currentDate.getDate() + 7);
+                updateCalendar();
+            });
+
+            todayButton.addEventListener('click', function() {
+                currentDate = new Date();
+                updateCalendar();
+            });
+
+            currentDateDisplay.addEventListener('click', function() {
+                calendarPopup.style.display = 'block';
+            });
+
+            closeCalendarButton.addEventListener('click', function() {
+                calendarPopup.style.display = 'none';
+            });
+
+            // Close the calendar popup when clicking outside of it
+            document.addEventListener('click', function(event) {
+                if (!calendarPopup.contains(event.target) && event.target !== currentDateDisplay) {
+                    calendarPopup.style.display = 'none';
+                }
+            });
+
+            updateCalendar();
+        });
+    </script>
+</body>
+</html>

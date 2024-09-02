@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Students</title>
+    <style>
+        /* Main Page Content */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden; /* Prevent background scroll when popup is open */
+            display: flex;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-container.blurred {
+            filter: blur(5px); /* Apply a blur to the entire main content including the sidebar */
+            pointer-events: none; /* Disable interactions with the background */
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px; /* Reduced padding to move sections up */
+            box-sizing: border-box;
+        }
+
+        .logo {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align logo to the top */
+            margin-top: 10px; /* Reduce margin to move logo up */
+        }
+
+        .sidebar-logo {
+            max-width: 220px; /* Ensure the logo fits within the sidebar width */
+        }
+
+        /* Thin faint white line underneath the logo */
+        .logo-divider {
+            width: 90%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3); /* Faint white line */
+            margin: 15px 0; /* Base margin */
+            transform: translateY(5px); /* Move the line down by 5px */
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            padding: 10px 0; /* Add padding to the top and bottom */
+            box-sizing: border-box;
+        }
+
+        .nav-link {
+            width: 100%;
+            padding: 20px 15px; /* Increased padding for larger sections */
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the start (left) */
+        }
+
+        .nav-link img {
+            margin-right: 15px;
+            height: 25px; /* Set a fixed height */
+            width: auto; /* Maintain the aspect ratio */
+        }
+
+        .nav-link:hover,
+        .nav-link.active { /* Add .active class for the currently active page */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            width: 400px; /* Longer search bar */
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid transparent; /* Removed solid color, added gradient */
+            border-radius: 4px;
+            background-image: linear-gradient(white, white), linear-gradient(135deg, #5c12ab, #2575fc); /* White inside, gradient border */
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            margin-right: 20px;
+            margin-top: 10px; /* Move the search bar down slightly */
+        }
+
+        .add-button-container {
+            position: relative;
+        }
+
+        .add-button {
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white; /* White "+" symbol */
+            border: none;
+            border-radius: 50%; /* Make the button circular */
+            padding: 10px;
+            cursor: pointer;
+            width: 40px; /* Fixed width and height for the circle */
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px; /* Align with search bar */
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%; /* Position directly below the button */
+            right: 0;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            border-radius: 5px;
+            overflow: hidden;
+            z-index: 1000;
+            width: 200px; /* Set width for the dropdown */
+            color: white; /* White text color */
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: white; /* White text color */
+            text-decoration: none;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-menu a img {
+            margin-right: 10px;
+            height: 20px;
+            width: auto;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter hover effect */
+        }
+
+        .add-button-container:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block; /* Keep dropdown visible when hovering over it */
+        }
+
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #ffffff;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .content h2 {
+            font-size: 2em;
+            color: black; /* Reverting back to black font color */
+            margin-bottom: 20px; /* Space below the heading */
+            text-align: left; /* Align text to the left */
+        }
+
+        .header-with-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .create-button {
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none; /* Removed the border */
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        .create-button img {
+            margin-right: 10px;
+            height: 20px;
+            width: auto;
+        }
+
+        /* Student Row Styling */
+        .student-row {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%; /* Ensure it fills the content area */
+        }
+
+        .student-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-info h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .student-info p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .edit-button, .delete-button, .view-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        .edit-button:hover, .delete-button:hover, .view-button:hover {
+            opacity: 0.8; /* Slight opacity change on hover */
+        }
+
+        .buttons-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Popup Container */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001; /* Ensure it sits above other content */
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-in-out;
+            padding: 20px;
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        /* Fade-in animation for the popup */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -45%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        /* Overlay (Semi-transparent background) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+
+        /* Popup Content */
+        .popup-content {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        /* Add Student Option */
+        .popup-content .option-add-student,
+        .popup-content .option-join-link {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border: 2px solid #ddd;
+            transition: all 0.3s ease;
+            border-radius: 0;
+            cursor: pointer;
+        }
+
+        .popup-content .option img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .popup-content .option h3 {
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-content .option p {
+            color: #555;
+        }
+
+        /* Active State Styling */
+        .option-active {
+            border-image: linear-gradient(135deg, #5c12ab, #2575fc) 1;
+        }
+
+        .popup-expanded {
+            margin-top: 20px;
+        }
+
+        .popup-expanded .input-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+
+        .popup-expanded .input-group input {
+            width: 48%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .popup-expanded .input-group-full {
+            width: 100%;
+        }
+
+        .popup-expanded .input-group-full input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .popup-expanded .create-student-button {
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none; /* Removed the border */
+            border-radius: 0; /* Removed rounded corners */
+            margin-top: 10px;
+            width: 100%; /* Make the button full width */
+            box-sizing: border-box;
+        }
+
+        .popup-expanded .copy-link-button {
+            font-size: 1em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+            padding: 8px 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 0;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .copy-status {
+            color: green;
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container" id="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="box-copy.png" alt="Copy Work It." class="sidebar-logo">
+            </div>
+            <div class="logo-divider"></div> <!-- Thin faint white line below the logo -->
+            <nav class="sidebar-nav">
+                <a href="teacherportal.html" class="nav-link"><img src="dashboard.png" alt="Dashboard Icon">Dashboard</a>
+                <a href="students.html" class="nav-link active"><img src="students.png" alt="Students Icon">Students</a>
+                <a href="customcontent.html" class="nav-link"><img src="custom-lessons.png" alt="Custom Content Icon">Custom Content</a>
+                <a href="curriculum.html" class="nav-link"><img src="curriculum.png" alt="Curriculum Icon">Curriculum</a>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="main-header">
+                <input type="text" class="search-bar" placeholder="Search">
+                <div class="add-button-container">
+                    <button class="add-button">+</button> <!-- Add button as a circular symbol -->
+                    <div class="dropdown-menu">
+                        <a href="#"><img src="students.png" alt="Add Class Icon">Add a Student</a>
+                        <a href="#"><img src="custom-lessons.png" alt="Create Custom Lesson Icon">Create Custom Lesson</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Section -->
+            <div class="content">
+                <div class="header-with-button">
+                    <h2>Students</h2>
+                    <button class="create-button" id="open-popup"><img src="addicon.png" alt="Add Icon">Add a Student</button>
+                </div>
+                <!-- Student rows will be injected here -->
+                <p id="no-students-message" style="text-align: center;">No students have been added yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Popup -->
+    <div class="popup-container" id="popup">
+        <h2>Add a Student</h2>
+        <p>Select an option to proceed.</p>
+        <div class="popup-content">
+            <div class="option option-add-student" id="add-student-option">
+                <img src="addlogo.png" alt="Add Student Icon">
+                <h3>Add a Student</h3>
+                <p>Manually add a student to your class.</p>
+            </div>
+            <div class="option option-join-link" id="join-link-option">
+                <img src="linklogo.png" alt="Student Join Link Icon">
+                <h3>Student Self Join Link</h3>
+                <p>Generate a link for students to join themselves.</p>
+            </div>
+        </div>
+
+        <!-- Expanded Popup Fields -->
+        <div class="popup-expanded" id="popup-expanded" style="display: none;">
+            <div id="add-student-fields" style="display: none;">
+                <div class="input-group">
+                    <input type="text" placeholder="Username" id="username">
+                    <input type="password" placeholder="Password" id="password">
+                </div>
+                <div class="input-group">
+                    <input type="text" placeholder="First Name" id="first-name">
+                    <input type="text" placeholder="Last Name" id="last-name">
+                </div>
+                <div class="input-group-full">
+                    <input type="email" placeholder="Email Address" id="email">
+                </div>
+                <button class="create-student-button">Create Student</button>
+            </div>
+
+            <div id="join-link-fields" style="display: none;">
+                <p>Share the link below with your students and they can either join your class by logging into their existing account or by creating a new account.</p>
+                <p id="join-link">https://example.com/join/12345</p>
+                <button class="copy-link-button" id="copy-link-button">Copy Link</button>
+                <p class="copy-status" id="copy-status">Copied to Clipboard</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const openPopupButton = document.getElementById('open-popup');
+            const popup = document.getElementById('popup');
+            const overlay = document.getElementById('overlay');
+            const mainContainer = document.getElementById('main-container');
+            const addStudentOption = document.getElementById('add-student-option');
+            const joinLinkOption = document.getElementById('join-link-option');
+            const popupExpanded = document.getElementById('popup-expanded');
+            const addStudentFields = document.getElementById('add-student-fields');
+            const joinLinkFields = document.getElementById('join-link-fields');
+            const copyLinkButton = document.getElementById('copy-link-button');
+            const joinLink = document.getElementById('join-link');
+            const copyStatus = document.getElementById('copy-status');
+
+            openPopupButton.addEventListener('click', function() {
+                popup.style.display = 'block';
+                overlay.style.display = 'block';
+                mainContainer.classList.add('blurred');
+            });
+
+            overlay.addEventListener('click', function() {
+                popup.style.display = 'none';
+                overlay.style.display = 'none';
+                mainContainer.classList.remove('blurred');
+                addStudentOption.classList.remove('option-active');
+                joinLinkOption.classList.remove('option-active');
+                popupExpanded.style.display = 'none';
+                addStudentFields.style.display = 'none';
+                joinLinkFields.style.display = 'none';
+                copyStatus.style.display = 'none';
+            });
+
+            addStudentOption.addEventListener('click', function() {
+                popupExpanded.style.display = 'block';
+                addStudentFields.style.display = 'block';
+                joinLinkFields.style.display = 'none';
+                addStudentOption.classList.add('option-active');
+                joinLinkOption.classList.remove('option-active');
+            });
+
+            joinLinkOption.addEventListener('click', function() {
+                popupExpanded.style.display = 'block';
+                joinLinkFields.style.display = 'block';
+                addStudentFields.style.display = 'none';
+                joinLinkOption.classList.add('option-active');
+                addStudentOption.classList.remove('option-active');
+            });
+
+            copyLinkButton.addEventListener('click', function() {
+                navigator.clipboard.writeText(joinLink.textContent).then(function() {
+                    copyStatus.style.display = 'block';
+                    setTimeout(function() {
+                        copyStatus.style.display = 'none';
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

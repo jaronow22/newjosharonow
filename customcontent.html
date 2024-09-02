@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interface</title>
+    <style>
+        /* Main Page Content */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden; /* Prevent background scroll when popup is open */
+            display: flex;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+        }
+
+        .main-container.blurred {
+            filter: blur(5px); /* Apply a blur to the entire main content including the sidebar */
+            pointer-events: none; /* Disable interactions with the background */
+        }
+
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 10px; /* Reduced padding to move sections up */
+            box-sizing: border-box;
+        }
+
+        .logo {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align logo to the top */
+            margin-top: 10px; /* Reduce margin to move logo up */
+        }
+
+        .sidebar-logo {
+            max-width: 220px; /* Ensure the logo fits within the sidebar width */
+        }
+
+        /* Thin faint white line underneath the logo */
+        .logo-divider {
+            width: 90%;
+            height: 1px;
+            background-color: rgba(255, 255, 255, 0.3); /* Faint white line */
+            margin: 15px 0; /* Base margin */
+            transform: translateY(5px); /* Move the line down by 5px */
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 100%;
+            padding: 10px 0; /* Add padding to the top and bottom */
+            box-sizing: border-box;
+        }
+
+        .nav-link {
+            width: 100%;
+            padding: 20px 15px; /* Increased padding for larger sections */
+            color: white;
+            text-decoration: none;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Align items to the start (left) */
+        }
+
+        .nav-link img {
+            margin-right: 15px;
+            height: 25px; /* Set a fixed height */
+            width: auto; /* Maintain the aspect ratio */
+        }
+
+        .nav-link:hover,
+        .nav-link.active { /* Add .active class for the currently active page */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle hover effect */
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background-color: #f1f1f1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: white;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar {
+            width: 400px; /* Longer search bar */
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid transparent; /* Removed solid color, added gradient */
+            border-radius: 4px;
+            background-image: linear-gradient(white, white), linear-gradient(135deg, #5c12ab, #2575fc); /* White inside, gradient border */
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            margin-right: 20px;
+            margin-top: 10px; /* Move the search bar down slightly */
+        }
+
+        .add-button-container {
+            position: relative;
+        }
+
+        .add-button {
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white; /* White "+" symbol */
+            border: none;
+            border-radius: 50%; /* Make the button circular */
+            padding: 10px;
+            cursor: pointer;
+            width: 40px; /* Fixed width and height for the circle */
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px; /* Align with search bar */
+        }
+
+        .dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%; /* Position directly below the button */
+    right: 0;
+    background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+    border-radius: 5px;
+    overflow: hidden;
+    z-index: 1000;
+    width: 200px; /* Set width for the dropdown */
+    color: white; /* White text color */
+}
+
+.dropdown-menu a {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    color: white !important; /* Ensure white text color */
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-menu a img {
+    margin-right: 10px;
+    height: 20px;
+    width: auto;
+}
+
+.dropdown-menu a:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly lighter hover effect */
+    color: white !important; /* Ensure text stays white on hover */
+}
+
+        .add-button-container:hover .dropdown-menu,
+        .dropdown-menu:hover {
+            display: block; /* Keep dropdown visible when hovering over it */
+        }
+
+        .content {
+            padding: 20px;
+            flex-grow: 1;
+            background-color: #ffffff;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .content h2 {
+            font-size: 2em;
+            color: black; /* Reverting back to black font color */
+            margin-bottom: 20px; /* Space below the heading */
+            text-align: left; /* Align text to the left */
+        }
+
+        .header-with-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .create-button {
+            font-size: 1.2em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
+            color: white;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none; /* Removed the border */
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        .create-button img {
+            margin-right: 10px;
+            height: 20px;
+            width: auto;
+        }
+
+        /* Lesson Row Styling */
+        .lesson-row {
+            background-color: white;
+            padding: 15px;
+            margin: 10px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            width: 100%; /* Ensure it fills the content area */
+        }
+
+        .lesson-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lesson-info h3 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #333;
+        }
+
+        .lesson-info p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .edit-button, .delete-button, .view-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        .edit-button:hover, .delete-button:hover, .view-button:hover {
+            opacity: 0.8; /* Slight opacity change on hover */
+        }
+
+        .buttons-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Popup Container */
+        .popup-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001; /* Ensure it sits above other content */
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.3s ease-in-out;
+            padding: 20px;
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        /* Fade-in animation for the popup */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -45%); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+
+        /* Overlay (Semi-transparent background) */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+        }
+
+        /* Popup Content */
+        .popup-content {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+
+        /* Typed Copywork Option */
+        .popup-content .option-typed {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border: 2px solid #ddd; /* Initial border color for Typed Copywork */
+            transition: all 0.3s ease;
+            border-radius: 0; /* Removed rounded corners */
+            cursor: pointer;
+        }
+
+        /* Handwritten Copywork Option */
+        .popup-content .option-handwritten {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border: 2px solid #ddd; /* Initial border color for Handwritten Copywork */
+            transition: all 0.3s ease;
+            border-radius: 0; /* Removed rounded corners */
+            cursor: pointer;
+        }
+
+        /* Narration Option */
+        .popup-content .option-narration {
+            flex: 1;
+            margin: 10px;
+            padding: 20px;
+            border-image: linear-gradient(135deg, #5c12ab, #2575fc) 1; /* Initial border color for Narration */
+            transition: all 0.3s ease;
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        /* Hover Styles for Different Options */
+        .popup-content .option-typed:hover {
+            border-image: linear-gradient(135deg, #5c12ab, #2575fc) 1; /* Apply a different gradient as a border on hover */
+        }
+
+        .popup-content .option-handwritten:hover {
+            border-image: linear-gradient(135deg, #5c12ab, #2575fc) 1; /* Apply a different gradient as a border on hover */
+        }
+
+        .popup-content .option img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .popup-content .option h3 {
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .popup-content .option p {
+            color: #555;
+        }
+
+        /* Coming Soon Styling */
+        .coming-soon {
+            border: 2px solid; /* Set the border width */
+            border-image: linear-gradient(135deg, #5c12ab, #2575fc) 1; /* Apply the gradient directly to the border */
+            background-color: #f3e8ff; /* Light purple tint */
+            position: relative;
+            border-radius: 0; /* Removed rounded corners */
+        }
+
+        .coming-soon::before {
+            content: "Coming Soon";
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+            padding: 5px 10px;
+            font-size: 0.9em;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 0; /* Removed rounded corners */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="main-container" id="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <img src="box-copy.png" alt="Copy Work It." class="sidebar-logo">
+            </div>
+            <div class="logo-divider"></div> <!-- Thin faint white line below the logo -->
+            <nav class="sidebar-nav">
+                <a href="teacherportal.html" class="nav-link"><img src="dashboard.png" alt="Dashboard Icon">Dashboard</a>
+                <a href="students.html" class="nav-link"><img src="students.png" alt="Students Icon">Students</a>
+                <a href="customcontent.html" class="nav-link active"><img src="custom-lessons.png" alt="Custom Content Icon">Custom Content</a>
+                <a href="curriculum.html" class="nav-link"><img src="curriculum.png" alt="Curriculum Icon">Curriculum</a>
+            </nav>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Top Header -->
+            <header class="main-header">
+                <input type="text" class="search-bar" placeholder="Search">
+                <div class="add-button-container">
+                    <button class="add-button">+</button> <!-- Add button as a circular symbol -->
+                    <div class="dropdown-menu">
+                        <a href="#" style="color: white !important;"><img src="students.png" alt="Add Class Icon">Add a Student</a>
+                        <a href="#" style="color: white !important;"><img src="custom-lessons.png" alt="Create Custom Lesson Icon">Create Custom Lesson</a>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Section -->
+            <div class="content">
+                <div class="header-with-button">
+                    <h2>Custom Content</h2>
+                    <button class="create-button" id="open-popup"><img src="addicon.png" alt="Add Icon">Create a Custom Lesson</button>
+                </div>
+                <!-- Lesson rows will be injected here -->
+                <p id="no-lessons-message" style="text-align: center;">No custom lessons have been created yet.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Popup -->
+    <div class="popup-container" id="popup">
+        <h2>Create Custom Lesson</h2>
+        <p>Custom Lessons let you create customized copywork content for your students.</p>
+        <div class="popup-content">
+            <div class="option option-typed" onclick="window.location.href='typedbox.html';">
+                <img src="typedcopy.png" alt="Typed Copywork Icon">
+                <h3>Typed Copywork</h3>
+                <p>Practice typing with curated copywork passages.</p>
+            </div>
+            <div class="option option-handwritten" onclick="window.location.href='handbox2.html';">
+                <img src="handcopy.png" alt="Handwritten Copywork Icon">
+                <h3>Handwritten Copywork</h3>
+                <p>Enhance handwriting with focused copywork exercises.</p>
+            </div>
+            <div class="option option-narration coming-soon">
+                <img src="narration.png" alt="Narration Icon">
+                <h3>Narration</h3>
+                <p>Encourage storytelling and comprehension through narration.</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let lessons = JSON.parse(localStorage.getItem('lessons')) || [];
+            const contentDiv = document.querySelector('.content');
+            const headerWithButtonDiv = document.querySelector('.header-with-button');
+            const noLessonsMessage = document.getElementById('no-lessons-message');
+    
+            // Remove any existing lesson rows
+            const existingRows = contentDiv.querySelectorAll('.lesson-row');
+            existingRows.forEach(row => row.remove());
+    
+            if (lessons.length > 0) {
+                noLessonsMessage.style.display = 'none';
+    
+                // Insert lessons below the header
+                lessons.forEach((lesson) => {
+                    const lessonRow = document.createElement('div');
+                    lessonRow.classList.add('lesson-row');
+                    lessonRow.innerHTML = `
+                        <div class="lesson-info">
+                            <h3>${lesson.title}</h3>
+                            ${lesson.category ? `<p>${lesson.category}</p>` : ''}
+                        </div>
+                        <div class="buttons-container">
+                            <button class="edit-button" onclick="editLesson(${lesson.id})">✏️</button>
+                            <button class="delete-button" onclick="deleteLesson(${lesson.id})">🗑️</button>
+                            <button class="view-button" onclick="viewLesson(${lesson.id})">📚</button>
+                        </div>
+                    `;
+                    contentDiv.appendChild(lessonRow);
+                });
+            } else {
+                noLessonsMessage.style.display = 'block';
+            }
+        });
+        
+        function deleteLesson(id) {
+            let lessons = JSON.parse(localStorage.getItem('lessons')) || [];
+            lessons = lessons.filter(lesson => lesson.id !== id);
+            localStorage.setItem('lessons', JSON.stringify(lessons));
+            location.reload();  // Reload the page to reflect the changes
+        }
+    
+        function editLesson(id) {
+            let lessons = JSON.parse(localStorage.getItem('lessons')) || [];
+            const lesson = lessons.find(lesson => lesson.id === id);
+            if (lesson) {
+                localStorage.setItem('editLesson', JSON.stringify(lesson));  // Store the lesson to be edited
+                window.location.href = 'typedbox.html';
+            }
+        }
+    
+        function viewLesson(id) {
+            let lessons = JSON.parse(localStorage.getItem('lessons')) || [];
+            const lesson = lessons.find(lesson => lesson.id === id);
+            if (lesson) {
+                alert(`Viewing Lesson: ${lesson.title}`);
+                // Add more functionality here for viewing the lesson in detail.
+            }
+        }
+    
+        // Functionality for "Create Custom Lesson" button
+        const openPopupButton = document.getElementById('open-popup');
+        const popup = document.getElementById('popup');
+        const overlay = document.getElementById('overlay');
+        const mainContainer = document.getElementById('main-container');
+        
+        openPopupButton.addEventListener('click', function() {
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+            mainContainer.classList.add('blurred');
+        });
+
+        overlay.addEventListener('click', function() {
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+            mainContainer.classList.remove('blurred');
+        });
+    </script>       
+</body>
+</html>

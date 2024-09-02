@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create a Handwritten Copywork Lesson</title>
+    <style>
+        @font-face {
+            font-family: 'Teaching Print';
+            src: url('fonts/TeachingPrint.woff2') format('woff2'),
+                 url('fonts/TeachingPrint.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'ColeCarreira';
+            src: url('fonts/ColeCarreira1.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            justify-content: center;
+        }
+
+        #input-container {
+            margin-bottom: 20px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        #button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .worksheet-container {
+            width: 8.5in;
+            height: 11in;
+            margin: 0 auto;
+            padding: 40px 0px;
+            background: #ffffff;
+            border-radius: 8px;
+            border: 1px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(135deg, #6a11cb, #2575fc);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            box-sizing: border-box;
+            page-break-after: always;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .name-date {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            font-size: 24px;
+            color: #333333;
+            padding: 0 20px;
+        }
+
+        .name-date div {
+            display: flex;
+            align-items: flex-end;
+            width: 45%;
+        }
+
+        .name-date label {
+            margin-right: 20px;
+            line-height: 1;
+        }
+
+        .line {
+            flex-grow: 1;
+            border-bottom: 2px solid #333333;
+        }
+
+        .title {
+            font-size: 24px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 0 20px;
+        }
+
+        .text-line {
+            border-bottom: 1px dotted #333333;
+            margin: 10px 0;
+            font-size: 75px;
+            line-height: 2em;
+            white-space: nowrap;
+            color: #333333;
+            padding-left: 4%;
+            padding-right: 5%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .text-line.practice-mode {
+            margin: 0;
+            line-height: 1.25em;
+            font-size: 75px;
+        }
+
+        #generated-text {
+            font-size: 48px;
+            line-height: 2em;
+            flex-grow: 1;
+            color: #333333;
+            margin-left: 2px;
+        }
+
+        .text-field {
+            width: calc(8.5in - 80px);
+            padding: 15px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid;
+            border-image-slice: 1;
+            border-image-source: linear-gradient(135deg, #6a11cb, #2575fc);
+            background-color: #ffffff;
+            color: #333333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            outline: none;
+            resize: vertical;
+        }
+
+        ::placeholder {
+            font-family: Arial, sans-serif;
+            font-size: 1em;
+            color: #999;
+        }
+
+        .header-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-container img {
+            max-width: 100px;
+            margin-bottom: 15px;
+        }
+
+        .header-container h1 {
+            font-size: 1.8em;
+            margin: 0;
+            color: #333;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        select, input[type="submit"], button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: none;
+            color: #ffffff;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            outline: none;
+        }
+
+        select:hover, input[type="submit"]:hover, button:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        select {
+            margin-right: 8px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+        }
+
+        .top-buttons {
+            display: flex;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            gap: 10px;
+        }
+
+        .back-button, .save-button {
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            border: none;
+            cursor: pointer;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .worksheet-buttons {
+            display: flex;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            gap: 10px;
+        }
+
+        .clear-button, .print-button {
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px; /* Reduced vertical padding */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.print-button img {
+    width: 24px;
+    height: 24px;
+    vertical-align: middle; /* Ensure the image aligns well with the text */
+}
+
+        @media print {
+            body > *:not(.worksheet-container) {
+                display: none;
+            }
+
+            .worksheet-container {
+                page-break-after: always;
+                display: block;
+                margin: 0;
+                padding: 0;
+                border: none;
+                box-shadow: none;
+                overflow: visible;
+            }
+
+            .print-button, .clear-button, .save-button, .back-button {
+                display: none;
+            }
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 400px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content h2 {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-content p {
+            font-size: 1em;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .modal-line {
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .cancel-button {
+            background-color: #ccc;
+            color: #ffffff;
+        }
+
+        .confirm-button {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-buttons">
+        <button class="back-button" id="back-button">Back</button>
+        <button class="save-button" onclick="saveLesson()">Save Lesson</button>
+    </div>
+
+    <div class="header-container">
+        <img src="pencil2.png" alt="Pencil Icon">
+        <h1>Create a Handwritten Copywork Lesson</h1>
+    </div>
+
+    <div id="input-container">
+        <textarea id="titleText" class="text-field" style="height: 60px;" placeholder="Enter your title or instructions here"></textarea>
+        <textarea id="userText" class="text-field" style="height: 200px;" placeholder="Enter your text here"></textarea>
+    </div>
+
+    <div id="button-container">
+        <select id="fontSelect">
+            <option value="Teaching Print">Print</option>
+            <option value="ColeCarreira">Cursive</option>
+        </select>
+        <select id="modeSelect">
+            <option value="copy">Copy Mode</option>
+            <option value="practice">Practice Mode</option>
+        </select>
+        <label for="fontSizeSlider">Font Size:</label>
+        <input type="range" id="fontSizeSlider" min="1" max="3" value="2" step="1">
+        <input type="submit" value="Generate Worksheet" onclick="generateWorksheet()">
+    </div>
+
+    <!-- The first worksheet with Name and Date -->
+    <div class="worksheet-container" id="firstPage">
+        <div class="name-date">
+            <div>
+                <label for="name">Name:</label>
+                <span class="line"></span>
+            </div>
+            <div>
+                <label for="date">Date:</label>
+                <span class="line"></span>
+            </div>
+        </div>
+        <div id="generated-text"></div>
+
+        <!-- Clear and Print Buttons -->
+        <div class="worksheet-buttons">
+            <button class="clear-button" onclick="clearWorksheet()">Clear</button>
+            <button class="print-button" onclick="printWorksheet()">
+                <img src="printlogo-02.png" alt="Print">
+            </button>
+        </div>
+    </div>
+
+    <!-- Additional pages will be appended here -->
+    <div id="additionalPages"></div>
+
+    <!-- Modal -->
+    <div id="confirmation-modal" class="modal">
+        <div class="modal-content">
+            <h2>You have unsaved changes.</h2>
+            <p>Are you sure you want to leave without saving?</p>
+            <div class="modal-line"></div>
+            <div class="modal-buttons">
+                <button class="modal-button cancel-button" id="cancel-button">Cancel</button>
+                <button class="modal-button confirm-button" id="confirm-button">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const fontSizeValues = {
+            1: '60px',  // Small
+            2: '85px',  // Medium
+            3: '110px'   // Large
+        };
+
+        const maxLinesPerPageCopyMode = {
+            1: 7,  // Small font
+            2: 5,  // Medium font
+            3: 4   // Large font
+        };
+
+        const maxLinesPerPagePracticeMode = {
+            1: 11,  // Small font
+            2: 8,  // Medium font
+            3: 6   // Large font
+        };
+
+        function generateWorksheet() {
+            const titleText = document.getElementById('titleText').value;
+            const userText = document.getElementById('userText').value;
+            const fontSelection = document.getElementById('fontSelect').value;
+            const modeSelection = document.getElementById('modeSelect').value;
+            const fontSizeSlider = document.getElementById('fontSizeSlider').value;
+            const fontSize = fontSizeValues[fontSizeSlider];
+            const linesPerPageCopy = maxLinesPerPageCopyMode[fontSizeSlider];
+            const linesPerPagePractice = maxLinesPerPagePracticeMode[fontSizeSlider];
+            const firstPageDiv = document.getElementById('generated-text');
+            const additionalPagesDiv = document.getElementById('additionalPages');
+
+            // Clear previous content
+            firstPageDiv.innerHTML = '';
+            additionalPagesDiv.innerHTML = '';
+
+            // Add the title if it exists
+            if (titleText.trim() !== '') {
+                const titleDiv = document.createElement('div');
+                titleDiv.classList.add('title');
+                titleDiv.innerText = titleText;
+                firstPageDiv.appendChild(titleDiv);
+            }
+
+            const paragraphs = userText.split(/\n+/); // Split text into paragraphs by new lines
+            let currentPageDiv = firstPageDiv;
+            let currentLineCount = 0;
+            const maxLineLength = 41; // Maximum number of characters per line
+            let totalLinesGenerated = 0;
+
+            paragraphs.forEach(paragraph => {
+                const words = paragraph.split(/\s+/).filter(word => word.trim() !== ""); // Split paragraph into words
+                let lineBuffer = '';
+
+                words.forEach((word, index) => {
+                    const testLine = lineBuffer + (lineBuffer ? ' ' : '') + word;
+                    const testLineWidth = measureTextWidth(testLine, fontSelection, fontSize);
+
+                    if (testLineWidth <= getPageWidth()) {
+                        // Add the word to the current line
+                        lineBuffer = testLine;
+                    } else {
+                        // If adding the word exceeds max line length, append the current line and start a new line
+                        if ((modeSelection === 'copy' && currentLineCount >= linesPerPageCopy) ||
+                            (modeSelection === 'practice' && currentLineCount >= linesPerPagePractice)) {
+                            currentPageDiv = createNewPage(additionalPagesDiv);
+                            currentLineCount = 0;
+                        }
+                        appendLineToPage(lineBuffer, currentPageDiv, fontSelection, modeSelection, fontSize);
+                        currentLineCount++;
+                        totalLinesGenerated++;
+                        lineBuffer = word;
+                    }
+                });
+
+                // Append the last buffered line (if any words are left)
+                if (lineBuffer.length > 0) {
+                    if ((modeSelection === 'copy' && currentLineCount >= linesPerPageCopy) ||
+                        (modeSelection === 'practice' && currentLineCount >= linesPerPagePractice)) {
+                        currentPageDiv = createNewPage(additionalPagesDiv);
+                        currentLineCount = 0;
+                    }
+                    appendLineToPage(lineBuffer, currentPageDiv, fontSelection, modeSelection, fontSize);
+                    currentLineCount++;
+                    totalLinesGenerated++;
+                }
+            });
+
+            // If in Practice Mode, add "Practice Below!" header and corresponding lines
+            if (modeSelection === 'practice') {
+                let practiceLinesAdded = 0;
+                const practiceHeading = document.createElement('div');
+                practiceHeading.style.textAlign = 'center';
+                practiceHeading.style.fontSize = '24px';
+                practiceHeading.style.marginTop = '40px';
+                practiceHeading.style.fontFamily = 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif';
+                practiceHeading.innerText = 'Practice Below!';
+
+                if (currentLineCount >= linesPerPagePractice) {
+                    currentPageDiv = createNewPage(additionalPagesDiv);
+                    currentLineCount = 0;
+                }
+                currentPageDiv.appendChild(practiceHeading);
+                currentLineCount++;
+
+                const practiceLineHeight = parseInt(fontSize) + 10;
+
+                let remainingLines = linesPerPagePractice - currentLineCount;
+
+                for (let i = 0; i < totalLinesGenerated; i++) {
+                    if (remainingLines === 0) {
+                        currentPageDiv = createNewPage(additionalPagesDiv);
+                        currentLineCount = 0;
+                        remainingLines = linesPerPagePractice;
+                    }
+                    appendPracticeLine(currentPageDiv, practiceLineHeight);
+                    currentLineCount++;
+                    remainingLines--;
+                    practiceLinesAdded++;
+                }
+            }
+
+            // Remove any empty pages from print view
+            document.querySelectorAll('.worksheet-container').forEach((page) => {
+                if (!page.innerHTML.trim()) {
+                    page.remove();
+                }
+            });
+        }
+
+        function appendLineToPage(lineText, pageDiv, fontSelection, modeSelection, fontSize) {
+            const textLine = document.createElement('div');
+            textLine.classList.add('text-line');
+            if (modeSelection === 'practice') {
+                textLine.classList.add('practice-mode');
+            }
+            textLine.style.fontFamily = fontSelection;
+            textLine.style.fontSize = fontSize;
+            textLine.style.textAlign = 'left';
+            textLine.innerText = lineText;
+
+            pageDiv.appendChild(textLine);
+        }
+
+        function appendPracticeLine(pageDiv, lineHeight) {
+            const practiceLine = document.createElement('div');
+            practiceLine.classList.add('practice-line');
+            practiceLine.style.height = lineHeight + 'px';
+            practiceLine.style.marginBottom = '10px'; // Adjust margin for uniformity
+            practiceLine.style.borderBottom = '2px solid #333333'; // Consistent with initial lines
+            pageDiv.appendChild(practiceLine);
+        }
+
+        function createNewPage(parentDiv) {
+            const newPageDiv = document.createElement('div');
+            newPageDiv.classList.add('worksheet-container');
+            parentDiv.appendChild(newPageDiv);
+            return newPageDiv;
+        }
+
+        function measureTextWidth(text, font, fontSize) {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            context.font = `${fontSize} ${font}`;
+            return context.measureText(text).width;
+        }
+
+        function getPageWidth() {
+            const worksheetContainer = document.querySelector('.worksheet-container');
+            const style = getComputedStyle(worksheetContainer);
+            const width = parseFloat(style.width) - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight);
+            return width;
+        }
+
+        // Automatically regenerate worksheet on font selection change
+        document.getElementById('fontSelect').addEventListener('change', generateWorksheet);
+        document.getElementById('fontSizeSlider').addEventListener('input', generateWorksheet);
+
+        // Clear the worksheet and text areas
+        function clearWorksheet() {
+            document.getElementById('titleText').value = '';
+            document.getElementById('userText').value = '';
+            document.getElementById('generated-text').innerHTML = '';
+            document.getElementById('additionalPages').innerHTML = '';
+        }
+
+        // Print the generated worksheet
+        function printWorksheet() {
+            const originalContent = document.body.innerHTML;
+            const worksheetContent = document.querySelector('.worksheet-container').outerHTML + document.getElementById('additionalPages').innerHTML;
+
+            document.body.innerHTML = worksheetContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            window.location.reload();
+        }
+
+        // Save the lesson as a text file
+        function saveLesson() {
+            const titleText = document.getElementById('titleText').value;
+            const userText = document.getElementById('userText').value;
+            const fileContent = `Title: ${titleText}\n\n${userText}`;
+            const blob = new Blob([fileContent], { type: 'text/plain' });
+            const anchor = document.createElement('a');
+            anchor.href = URL.createObjectURL(blob);
+            anchor.download = 'lesson.txt';
+            anchor.click();
+        }
+
+        // Back button with confirmation modal
+        const backButton = document.getElementById('back-button');
+        const confirmationModal = document.getElementById('confirmation-modal');
+        const cancelButton = document.getElementById('cancel-button');
+        const confirmButton = document.getElementById('confirm-button');
+
+        backButton.addEventListener('click', function() {
+            confirmationModal.style.display = 'flex';
+        });
+
+        cancelButton.addEventListener('click', function() {
+            confirmationModal.style.display = 'none';
+        });
+
+        confirmButton.addEventListener('click', function() {
+            confirmationModal.style.display = 'none';
+            window.location.href = 'customcontent.html';  // Adjust this link to the correct destination
+        });
+    </script>
+</body>
+</html>
