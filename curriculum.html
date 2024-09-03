@@ -12,10 +12,6 @@
             height: 100vh;
         }
 
-        h2 {
-            font-size: 2em;
-        }
-
         .sidebar {
             width: 250px;
             min-width: 250px;
@@ -46,7 +42,6 @@
             height: 1px;
             background-color: rgba(255, 255, 255, 0.3);
             margin: 15px 0;
-            transform: translateY(5px);
         }
 
         .sidebar-nav {
@@ -174,20 +169,19 @@
             flex-grow: 1;
             background-color: #ffffff;
             overflow-y: auto;
-            box-sizing: border-box; /* Ensure padding is included in width */
+            box-sizing: border-box;
         }
 
-        /* Improved dropdown menu styling */
         .curriculum-select {
             font-size: 1em;
             padding: 10px;
             border-radius: 5px;
-            border: 1px solid #ccc; /* Light grey border */
+            border: 1px solid #ccc;
             width: 220px;
             background-color: white;
             color: #333;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            appearance: none; /* Remove default dropdown arrow */
+            appearance: none;
             background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
             background-repeat: no-repeat;
             background-position: right 10px center;
@@ -196,12 +190,11 @@
         }
 
         .curriculum-select:focus {
-            border-color: #5c12ab; /* Gradient starting color */
+            border-color: #5c12ab;
             box-shadow: 0 0 0 3px rgba(92, 18, 171, 0.3);
             outline: none;
         }
 
-        /* Curriculum modules with a light grey outline */
         .curriculum-modules {
             display: flex;
             flex-wrap: wrap;
@@ -219,7 +212,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border: 1px solid #ddd; /* Light grey border around each module */
+            border: 1px solid #ddd;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
@@ -231,7 +224,7 @@
         .module h3 {
             margin: 0 0 10px;
             font-size: 1.2em;
-            background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient color */
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             color: transparent;
@@ -248,14 +241,13 @@
             color: #007bff;
             font-weight: bold;
             align-self: flex-end;
-            cursor: pointer; /* Make the link appear clickable */
+            cursor: pointer;
         }
 
         .module a:hover {
             text-decoration: underline;
         }
 
-        /* Module details view */
         .module-details {
             padding: 20px;
             background-color: #ffffff;
@@ -275,14 +267,13 @@
         }
 
         .subhead-section h3 {
-    font-size: 1.5em;
-    background: linear-gradient(135deg, #5c12ab, #2575fc); /* Gradient background */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* Transparent text fill for gradient clipping */
-    background-clip: text;
-    color: transparent; /* Fallback for non-webkit browsers */
-    margin-bottom: 10px;
-}
+            font-size: 1.5em;
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+        }
 
         .lessons-list {
             list-style: none;
@@ -311,6 +302,11 @@
             border-color: #ccc;
         }
 
+        .button-group {
+            display: flex;
+            align-items: center;
+        }
+
         .assign-emoji {
             cursor: pointer;
             font-size: 1.2em;
@@ -331,7 +327,16 @@
             white-space: nowrap;
         }
 
-        /* Lesson content view */
+        .preview-button {
+            background: linear-gradient(135deg, #5c12ab, #2575fc);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
         .lesson-content {
             padding: 20px;
             background-color: #ffffff;
@@ -349,6 +354,40 @@
         .lesson-content p {
             font-size: 1.2em;
             color: #555;
+            text-indent: 20px;
+            position: relative;
+        }
+
+        .lesson-content p::before {
+            content: open-quote;
+            font-size: 1.4em;
+            position: absolute;
+            left: -10px;
+        }
+
+        .lesson-content p::after {
+            content: close-quote;
+            font-size: 1.4em;
+        }
+
+        .quote-block {
+            background-color: #fff; /* Using shorthand for white */
+            border: 1px solid #ddd; /* Light grey border */
+            border-radius: 8px; /* Rounded corners for aesthetic appeal */
+            padding: 10px 20px; /* Padding inside each quote block */
+            margin-bottom: 10px; /* Margin below each block to separate them */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+            font-size: 1em; /* Standard font size */
+            color: #333; /* Dark grey color for text */
+            text-align: left; /* Ensuring text aligns to the left */
+            display: block; /* Making sure each quote block is a block-level element */
+            width: auto; /* Auto width to adjust based on content */
+            word-wrap: break-word; /* Ensures long words do not overflow */
+        }
+
+        .quote-block::before, .quote-block::after,
+        .lesson-content p::before, .lesson-content p::after {
+            content: ''; /* Explicitly empty */
         }
 
         .back-button {
@@ -419,10 +458,48 @@
             margin-right: 10px;
         }
 
-        .assign-button {
+        .assign-button,
+        .preview-button {
             background: linear-gradient(135deg, #5c12ab, #2575fc);
             color: white;
         }
+
+        .preview-modal-content {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .preview-option {
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            text-align: center; /* Center text horizontally */
+        }
+
+        .preview-option:hover {
+            transform: scale(1.1);
+        }
+
+        .preview-option img {
+            width: 40px;
+            height: 40px;
+        }
+
+        .preview-option span {
+            margin-top: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -489,45 +566,75 @@
                 <div class="subhead-section">
                     <h3>Historical Figures</h3>
                     <ul class="lessons-list">
-                        <li onclick="showLesson('Franklin D. Roosevelt', '“The only thing we have to fear is fear itself.”\n“The only limit to our realization of tomorrow is our doubts of today.”')">
-                            1. Franklin D. Roosevelt
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                        <li onclick="showLesson('Franklin D. Roosevelt', 'The only thing we have to fear is fear itself.\nThe only limit to our realization of tomorrow is our doubts of today.')">
+                            Franklin D. Roosevelt
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The only thing we have to fear is fear itself.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
-                        <li onclick="showLesson('Winston Churchill', '“Success is not final, failure is not fatal: It is the courage to continue that counts.”\n“To each, there comes in their lifetime a special moment when they are figuratively tapped on the shoulder and offered the chance to do a very special thing, unique to them and fitted to their talents.”')">
-                            2. Winston Churchill
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                        <li onclick="showLesson('Winston Churchill', 'Success is not final, failure is not fatal: It is the courage to continue that counts.\nTo each, there comes in their lifetime a special moment when they are figuratively tapped on the shoulder and offered the chance to do a very special thing, unique to them and fitted to their talents.')">
+                            Winston Churchill
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Success is not final, failure is not fatal: It is the courage to continue that counts.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Martin Luther King Jr.', 'I have a dream that one day this nation will rise up and live out the true meaning of its creed.\nInjustice anywhere is a threat to justice everywhere.')">
                             Martin Luther King Jr.
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'I have a dream that one day this nation will rise up and live out the true meaning of its creed.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Abraham Lincoln', 'The best way to predict your future is to create it.\nGovernment of the people, by the people, for the people, shall not perish from the Earth.')">
                             Abraham Lincoln
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The best way to predict your future is to create it.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Nelson Mandela', 'It always seems impossible until it’s done.\nEducation is the most powerful weapon which you can use to change the world.')">
                             Nelson Mandela
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'It always seems impossible until it’s done.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Eleanor Roosevelt', 'The future belongs to those who believe in the beauty of their dreams.\nYou gain strength, courage, and confidence by every experience in which you really stop to look fear in the face.')">
                             Eleanor Roosevelt
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The future belongs to those who believe in the beauty of their dreams.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Mahatma Gandhi', 'Be the change that you wish to see in the world.\nLive as if you were to die tomorrow. Learn as if you were to live forever.')">
                             Mahatma Gandhi
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Be the change that you wish to see in the world.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('John F. Kennedy', 'Ask not what your country can do for you—ask what you can do for your country.\nThe only thing necessary for the triumph of evil is for good men to do nothing.')">
                             John F. Kennedy
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Ask not what your country can do for you—ask what you can do for your country.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Helen Keller', 'The only thing worse than being blind is having sight but no vision.\nAlone we can do so little; together we can do so much.')">
                             Helen Keller
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The only thing worse than being blind is having sight but no vision.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Thomas Jefferson', 'I’m a great believer in luck, and I find the harder I work the more I have of it.\nThe tree of liberty must be refreshed from time to time with the blood of patriots and tyrants.')">
                             Thomas Jefferson
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'I’m a great believer in luck, and I find the harder I work the more I have of it.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -536,43 +643,73 @@
                     <ul class="lessons-list">
                         <li onclick="showLesson('Jane Austen', 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.\nThere is no charm equal to tenderness of heart.')">
                             Jane Austen
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('William Shakespeare', 'All the world’s a stage, and all the men and women merely players.\nTo be, or not to be: that is the question.')">
                             William Shakespeare
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'All the world’s a stage, and all the men and women merely players.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Mark Twain', 'The secret of getting ahead is getting started.\nTwenty years from now you will be more disappointed by the things that you didn’t do than by the ones you did do.')">
                             Mark Twain
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The secret of getting ahead is getting started.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Charles Dickens', 'It was the best of times, it was the worst of times…\nPlease, sir, I want some more.')">
                             Charles Dickens
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'It was the best of times, it was the worst of times…')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('J.K. Rowling', 'It does not do to dwell on dreams and forget to live.\nWe are only as strong as we are united, as weak as we are divided.')">
                             J.K. Rowling
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'It does not do to dwell on dreams and forget to live.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('C.S. Lewis', 'You can make anything by writing.\nCourage, dear heart.')">
                             C.S. Lewis
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'You can make anything by writing.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('J.R.R. Tolkien', 'Not all those who wander are lost.\nEven the smallest person can change the course of the future.')">
                             J.R.R. Tolkien
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Not all those who wander are lost.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('George Orwell', 'Big Brother is Watching You.\nAll animals are equal, but some animals are more equal than others.')">
                             George Orwell
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Big Brother is Watching You.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Louisa May Alcott', 'I am not afraid of storms, for I am learning how to sail my ship.\nThere is no limit to what we, as women, can accomplish.')">
                             Louisa May Alcott
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'I am not afraid of storms, for I am learning how to sail my ship.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('F. Scott Fitzgerald', 'So we beat on, boats against the current, borne back ceaselessly into the past.\nI hope she'll be a fool — that's the best thing a girl can be in this world, a beautiful little fool.')">
                             F. Scott Fitzgerald
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'So we beat on, boats against the current, borne back ceaselessly into the past.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -581,43 +718,73 @@
                     <ul class="lessons-list">
                         <li onclick="showLesson('Albert Einstein', 'Imagination is more important than knowledge.\nLife is like riding a bicycle. To keep your balance you must keep moving.')">
                             Albert Einstein
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Imagination is more important than knowledge.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Steve Jobs', 'Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.\nStay hungry, stay foolish.')">
                             Steve Jobs
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Your work is going to fill a large part of your life, and the only way to be truly satisfied is to do what you believe is great work.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Mother Teresa', 'Spread love everywhere you go. Let no one ever come to you without leaving happier.\nNot all of us can do great things. But we can do small things with great love.')">
                             Mother Teresa
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Spread love everywhere you go. Let no one ever come to you without leaving happier.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Brene Brown', 'Vulnerability is not winning or losing; it’s having the courage to show up and be seen when we have no control over the outcome.\nOwning our story and loving ourselves through that process is the bravest thing that we’ll ever do.')">
                             Brene Brown
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Vulnerability is not winning or losing; it’s having the courage to show up and be seen when we have no control over the outcome.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Helen Keller', 'The only thing worse than being blind is having sight but no vision.\nLife is either a daring adventure or nothing at all.')">
                             Helen Keller
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The only thing worse than being blind is having sight but no vision.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Walt Disney', 'All our dreams can come true if we have the courage to pursue them.\nThe way to get started is to quit talking and begin doing.')">
                             Walt Disney
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'All our dreams can come true if we have the courage to pursue them.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Maya Angelou', 'You may not control all the events that happen to you, but you can decide not to be reduced by them.\nWhen someone shows you who they are, believe them the first time.')">
                             Maya Angelou
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'You may not control all the events that happen to you, but you can decide not to be reduced by them.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Confucius', 'It does not matter how slowly you go as long as you do not stop.\nOur greatest glory is not in never falling, but in rising every time we fall.')">
                             Confucius
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'It does not matter how slowly you go as long as you do not stop.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('John Lennon', 'Life is what happens when you’re busy making other plans.\nYou may say I’m a dreamer, but I’m not the only one.')">
                             John Lennon
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'Life is what happens when you’re busy making other plans.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                         <li onclick="showLesson('Oprah Winfrey', 'The biggest adventure you can take is to live the life of your dreams.\nWhat I know for sure is that what you give comes back to you.')">
                             Oprah Winfrey
-                            <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            <div class="button-group">
+                                <button class="preview-button" onclick="openPreviewModal(event, 'The biggest adventure you can take is to live the life of your dreams.')">Preview Lesson</button>
+                                <span class="assign-emoji" onclick="openAssignModal(event)">📚</span>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -644,9 +811,23 @@
             <label for="lesson-time">Lesson Time</label>
             <input type="time" id="lesson-time">
             
+            <label for="lesson-type">Lesson Type</label>
+            <select id="lesson-type">
+                <option value="typed">Typed</option>
+                <option value="handwritten">Handwritten</option>
+            </select>
+
+            <label for="status-select">Lesson Status</label>
+            <select id="status-select">
+                <option value="published">Published</option>
+                <option value="draft">Draft</option>
+            </select>
+
             <label for="student-select">Student</label>
             <select id="student-select">
-                <option value="student">Student</option>
+                <option value="student1">Student 1</option>  <!-- Example placeholders -->
+                <option value="student2">Student 2</option>
+                <!-- Additional student options would be loaded dynamically if required -->
             </select>
             
             <button class="cancel-button" onclick="closeAssignModal()">Cancel</button>
@@ -654,7 +835,26 @@
         </div>
     </div>
 
+    <!-- Preview Lesson Modal -->
+    <div id="previewModal" class="modal">
+        <div class="modal-content">
+            <h2>Preview Lesson</h2>
+            <div class="preview-modal-content">
+                <div class="preview-option" onclick="previewLesson('typed')">
+                    <img src="keyboard.png" alt="Typed Lesson">
+                    <span>Typed Lesson</span>
+                </div>
+                <div class="preview-option" onclick="previewLesson('handwritten')">
+                    <img src="pencil.png" alt="Handwritten Lesson">
+                    <span>Handwritten Lesson</span>
+                </div>
+            </div>
+            <button class="cancel-button" onclick="closePreviewModal()">Close</button>
+        </div>
+    </div>
+
     <script>
+        // Modules definition
         const modules = {
             "5th-grade": [
                 { title: "Famous Quotes", description: "Students will explore and learn from famous quotes, analyzing their meanings and applications.", lessons: 30 },
@@ -669,35 +869,45 @@
                 { title: "Nature Journals and Observations", description: "Students will document their observations of nature, combining writing with scientific exploration.", lessons: 12 }
             ]
         };
-    
-        document.getElementById('curriculum-select').addEventListener('change', function() {
-            const selectedGrade = this.value;
+
+        // DOM loaded event
+        document.addEventListener('DOMContentLoaded', function () {
+            const curriculumSelect = document.getElementById('curriculum-select');
             const curriculumModulesDiv = document.getElementById('curriculum-modules');
-            curriculumModulesDiv.innerHTML = '';
-    
-            if (modules[selectedGrade]) {
-                modules[selectedGrade].forEach(module => {
-                    const moduleDiv = document.createElement('div');
-                    moduleDiv.className = 'module';
-                    moduleDiv.innerHTML = `
-                        <h3>${module.title}</h3>
-                        <p>${module.description}</p>
-                        <a onclick="showModuleDetails('${module.title}')">View ${module.lessons} Lessons ›</a>
-                    `;
-                    curriculumModulesDiv.appendChild(moduleDiv);
-                });
-            }
+
+            // Select change event
+            curriculumSelect.addEventListener('change', function () {
+                const selectedGrade = this.value;
+                curriculumModulesDiv.innerHTML = '';
+
+                if (modules[selectedGrade]) {
+                    modules[selectedGrade].forEach(module => {
+                        const moduleDiv = document.createElement('div');
+                        moduleDiv.className = 'module';
+                        moduleDiv.innerHTML = `
+                            <h3>${module.title}</h3>
+                            <p>${module.description}</p>
+                            <a onclick="showModuleDetails('${module.title}')">View ${module.lessons} Lessons ›</a>
+                        `;
+                        curriculumModulesDiv.appendChild(moduleDiv);
+                    });
+                }
+            });
+
+            // Initial load for 5th-grade modules
+            curriculumSelect.value = '5th-grade';
+            curriculumSelect.dispatchEvent(new Event('change'));
         });
-    
+
+        // Function to display module details
         function showModuleDetails(moduleTitle) {
             const curriculumHeader = document.getElementById('curriculum-header');
             const curriculumModules = document.getElementById('curriculum-modules');
             const moduleDetails = document.getElementById('module-details');
             const lessonContent = document.getElementById('lesson-content');
-            
-            // Change the URL without reloading the page
+
+            // Update state and display appropriate sections
             history.pushState({ page: 'module' }, `${moduleTitle}`, `#module`);
-    
             curriculumHeader.style.display = 'none';
             curriculumModules.style.display = 'none';
             moduleDetails.style.display = 'block';
@@ -705,35 +915,107 @@
             document.getElementById('module-title').textContent = moduleTitle;
         }
 
+        // Function to display lesson details
         function showLesson(lessonTitle, lessonQuotes) {
             const moduleDetails = document.getElementById('module-details');
             const lessonContent = document.getElementById('lesson-content');
-    
+
+            // Update state and display lesson content
             history.pushState({ page: 'lesson' }, `${lessonTitle}`, `#lesson`);
-    
             moduleDetails.style.display = 'none';
             lessonContent.style.display = 'block';
             document.getElementById('lesson-title').textContent = lessonTitle;
-            document.getElementById('lesson-quotes').textContent = lessonQuotes;
+
+            // Clear existing content and split quotes into separate blocks
+            document.getElementById('lesson-quotes').innerHTML = '';
+            lessonQuotes.split('\n').forEach(quote => {
+                if (quote.trim() !== "") {
+                    const quoteDiv = document.createElement('div');
+                    quoteDiv.classList.add('quote-block');
+                    quoteDiv.textContent = quote;
+                    document.getElementById('lesson-quotes').appendChild(quoteDiv);
+                }
+            });
         }
 
+        // Function to open the assignment modal
         function openAssignModal(event) {
-            event.stopPropagation(); // Prevent triggering the lesson's onclick event
-            document.getElementById('assignModal').style.display = 'block';
+            event.stopPropagation();  // Prevent triggering parent element events
+            const assignModal = document.getElementById('assignModal');
+            assignModal.style.display = 'block';
         }
 
+        // Function to close the assignment modal
         function closeAssignModal() {
-            document.getElementById('assignModal').style.display = 'none';
+            const assignModal = document.getElementById('assignModal');
+            assignModal.style.display = 'none';
         }
 
+        // Function to assign a lesson
         function assignLesson() {
-            // Here, you would add logic to assign the lesson, e.g., save the data somewhere
-            alert('Lesson assigned!');
+            const lessonDate = document.getElementById('lesson-date').value;
+            const lessonTime = document.getElementById('lesson-time').value;
+            const lessonType = document.getElementById('lesson-type').value;
+            const lessonStatus = document.getElementById('status-select').value;
+            const studentName = document.getElementById('student-select').value;
+            const lessonTitle = document.getElementById('lesson-title').textContent;
+
+            // Create assignment object and store in local storage
+            const assignment = {
+                date: lessonDate,
+                time: lessonTime,
+                type: lessonType,
+                status: lessonStatus,
+                title: lessonTitle,
+                student: studentName
+            };
+
+            let assignments = JSON.parse(localStorage.getItem('assignments')) || [];
+            assignments.push(assignment);
+            localStorage.setItem('assignments', JSON.stringify(assignments));
+
+            // Close modal and notify the user
             closeAssignModal();
+            alert('Lesson Assigned Successfully!');
+            // Optional: Redirect or update UI
         }
-    
-        // Listen for browser back button
-        window.addEventListener('popstate', function(event) {
+
+        // Function to open the preview modal
+        function openPreviewModal(event, topQuote) {
+            event.stopPropagation();  // Prevent triggering parent element events
+            const previewModal = document.getElementById('previewModal');
+            previewModal.dataset.topQuote = topQuote;
+            previewModal.style.display = 'block';
+        }
+
+        // Function to close the preview modal
+        function closePreviewModal() {
+            const previewModal = document.getElementById('previewModal');
+            previewModal.style.display = 'none';
+        }
+
+        // Function to preview a lesson based on type
+        function previewLesson(type) {
+            const previewModal = document.getElementById('previewModal');
+            const topQuote = previewModal.dataset.topQuote;
+            if (type === 'typed') {
+                // Navigate to the typed preview page with the top quote
+                window.location.href = `typedpreview.html?quote=${encodeURIComponent(topQuote)}`;
+            } else if (type === 'handwritten') {
+                if (document.getElementById('lesson-title').textContent === 'Franklin D. Roosevelt') {
+                    // Open specific image for Franklin D. Roosevelt handwritten lesson
+                    window.open('Lesson1.1.png', '_blank');
+                } else {
+                    alert(`Previewing a ${type} lesson.`);
+                }
+            }
+            closePreviewModal();  // Close the modal after previewing
+        }
+
+        // Ensure to add any additional logic needed for dynamically loading students or handling other dynamic aspects of the UI.
+
+        // Popstate event to manage browser history navigation
+        window.addEventListener('popstate', function (event) {
             if (event.state && event.state.page === 'module') {
                 showModuleDetails(document.getElementById('module-title').textContent);
             } else if (event.state && event.state.page === 'lesson') {
@@ -741,28 +1023,26 @@
                 const lessonQuotes = document.getElementById('lesson-quotes').textContent;
                 showLesson(lessonTitle, lessonQuotes);
             } else {
-                showCurriculumPage();
+                showCurriculumPage();  // Return to the main curriculum selection view
             }
         });
 
+        // Function to display the curriculum page
         function showCurriculumPage() {
             const curriculumHeader = document.getElementById('curriculum-header');
             const curriculumModules = document.getElementById('curriculum-modules');
             const moduleDetails = document.getElementById('module-details');
             const lessonContent = document.getElementById('lesson-content');
 
+            // Adjust display settings for returning to the main page
             curriculumHeader.style.display = 'block';
-            curriculumModules.style.display = 'flex'; // Ensure correct display style
+            curriculumModules.style.display = 'flex';
             moduleDetails.style.display = 'none';
             lessonContent.style.display = 'none';
 
-            // Adjust the URL back to the curriculum page without reloading
+            // Update URL without reloading the page
             history.pushState(null, 'Curriculum', window.location.pathname);
         }
-    
-        // Initialize with 5th grade modules
-        document.getElementById('curriculum-select').value = '5th-grade';
-        document.getElementById('curriculum-select').dispatchEvent(new Event('change'));
-    </script>    
+    </script>
 </body>
 </html>
